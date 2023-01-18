@@ -1,37 +1,7 @@
 export default class View {
     constructor () {
-        // The root element
         this.app = this.getElement('#grid');
-        const hancomData = [
-            { id: 'viewBox', text: '0', className: 'viewBox grayBox' },
-            { id: 'seven', text: '7', className: 'box' },
-            { id: 'eight', text: '8', className: 'box' },
-            { id: 'nine', text: '9', className: 'box' },
-            { id: 'division', text: '÷', className: 'box grayBox' },
-            { id: 'four', text: '4', className: 'box' },
-            { id: 'five', text: '5', className: 'box' },
-            { id: 'six', text: '6', className: 'box' },
-            { id: 'multiply', text: 'x', className: 'box grayBox' },
-            { id: 'one', text: '1', className: 'box' },
-            { id: 'two', text: '2', className: 'box' },
-            { id: 'three', text: '3', className: 'box' },
-            { id: 'minus', text: '-', className: 'box grayBox' },
-            { id: 'zero', text: '0', className: 'box' },
-            { id: 'c', text: 'c', className: 'box orangeBox' },
-            { id: 'equal', text: '=', className: 'box grayBox' },
-            { id: 'plus', text: '+', className: 'box grayBox' },
-        ];
-
-        this.app.append;
-        hancomData.forEach(element => {
-            const createElement = this.createElement(
-                'div',
-                element.id,
-                element.className,
-            );
-            createElement.textContent = element.text;
-            this.app.append(createElement);
-        });
+        this.result = 0;
     }
 
     // Create an element with id and an optional CSS class
@@ -48,5 +18,54 @@ export default class View {
     getElement (selector) {
         const element = document.querySelector(selector);
         return element;
+    }
+
+    /**
+     * 계산기를 보여준다.
+     * @param {model} hancomData
+     */
+    displayHancomCalculate (hancomData) {
+        hancomData.forEach(element => {
+            const createElement = this.createElement(
+                'button',
+                element.id,
+                element.className,
+            );
+            createElement.textContent = element.text;
+            this.app.append(createElement);
+        });
+    }
+
+    /**
+     * C 를 눌렀을때 0 으로 초기화 한다.
+     */
+    resetResult () {
+        result.textContent = 0;
+    }
+
+    setFirstInputNumber (handler) {
+        const grid = this.getElement('#grid');
+        grid.addEventListener('click', e => {
+            if (e.target.id !== 'grid') handler(e.target.innerText);
+        });
+    }
+
+    /**
+     * 선택한 숫자를 입력한다.
+     * @param {number} selectNumber
+     */
+    displayResult (getValue) {
+        if (getValue == 'c') {
+            this.resetResult();
+        } else {
+            if (result.textContent !== '0') {
+                result.textContent += Number(getValue);
+            } else {
+                result.textContent = Number(getValue);
+            }
+        }
+        this.result = result.textContent;
+
+        return result.textContent;
     }
 }

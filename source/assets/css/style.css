@@ -28,10 +28,10 @@ main {
     grid-column: span 4;
     border-radius: 5px;
     padding: 6px 20px;
-    font-size: 310%;
+    font-size: 250%;
     text-align: right;
     font-weight: bold;
-    line-height: 70px;
+    line-height: 40px;
     height: 60px;
     border: 2px dashed #000;
 } 
