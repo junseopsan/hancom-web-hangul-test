@@ -1,0 +1,33 @@
+main {
+    width: 410px;
+}
+#grid{
+    display: grid;
+    grid-template-columns: 80px 80px 80px 80px;
+    grid-gap: 10px;
+    background-color: lavender;
+    color: #444;
+    padding: 30px;
+    border-radius: 10px;
+}
+.box {
+    background-color: #fff;
+    color: #000;
+    border-radius: 5px;
+    padding: 20px;
+    font-size: 150%;
+    text-align: center;
+}
+.grayBox {
+    background-color: lightgray;
+}
+.orangeBox {
+    background-color: orange;
+}
+.viewBox {
+    grid-column: span 4;
+    border-radius: 5px;
+    padding: 20px;
+    font-size: 150%;
+    text-align: right;
+} 
