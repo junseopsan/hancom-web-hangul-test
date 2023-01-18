@@ -13,10 +13,10 @@
 5. OOP 패턴으로 구현한다면 가산점이 있습니다. (ES5, ES6 모두 허용)
 6. MVC 패턴을 적용한다면 가산점이 있습니다.
 7. OOP와 MVC 패턴을 사용한 경우 클래스 다이어그램을 제출한다면 가산점이 있습니다. 라이브러리는 제외하고, 다음 그림과 같이 간략히 작성해서 제출해주세요. MVC 패턴을 적용한 경우 모델과 뷰를 구분해서 표시해주세요.
-![exam](./%08source/images/exam.png)
+![exam](./source/assets/images/exam.png)
 
 8. 결과물이 완성되지 않아도 제출해주시기 바랍니다.
-![goal](./%08source/images/goal.png)
+![goal](./source/assets/images/goal.png)
 
 
 [채점1] 총 100점

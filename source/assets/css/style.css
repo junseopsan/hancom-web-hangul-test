@@ -27,7 +27,11 @@ main {
 .viewBox {
     grid-column: span 4;
     border-radius: 5px;
-    padding: 20px;
-    font-size: 150%;
+    padding: 6px 20px;
+    font-size: 310%;
     text-align: right;
+    font-weight: bold;
+    line-height: 70px;
+    height: 60px;
+    border: 2px dashed #000;
 } 
