@@ -21,7 +21,7 @@ export default class Model {
         ];
         this.resultValue = 0;
         this.firstValue = 0;
-        this.secondValue = 0;
+        this.secondValue = null;
         this.calcType = null;
     }
     /**
@@ -50,5 +50,11 @@ export default class Model {
 
     getSecondValue () {
         return this.secondValue;
+    }
+    setCalcType (value) {
+        this.calcType = value;
+    }
+    getCalcType () {
+        return this.calcType;
     }
 }

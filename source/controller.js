@@ -12,8 +12,9 @@ export default class Controller {
      */
     clearValues = () => {
         this.model.setFirstValue(0);
-        this.model.setSecondValue(0);
+        this.model.setSecondValue(null);
         this.view.displayCalcValue(0);
+        this.model.setCalcType(null);
         return '';
     };
 
@@ -23,18 +24,15 @@ export default class Controller {
      * @param {string} value
      */
     viewCalcValue = value => {
-        this.operatoer(value);
+        console.log(value);
         if (Number.isInteger(Number(value))) {
-            // firstValue
             if (!this.model.calcType) {
-                console.log('first');
                 this.model.setFirstValue(Number(this.model.firstValue + value));
+                console.log(this.model.firstValue);
                 this.view.displayCalcValue(this.model.firstValue);
                 return;
             }
-            // secondValue
             if (this.model.calcType) {
-                console.log('second');
                 this.model.setSecondValue(
                     Number(this.model.secondValue + value),
                 );
@@ -42,37 +40,65 @@ export default class Controller {
                 return;
             }
         }
+        // 찻반쩨 깂 얀신지 두번째
+        this.operatoer(value);
+        // if (!this.isNull(this.model.getSecondValue())) {
+        // }
     };
+
+    isNull (value) {
+        return typeof value != 'undefined' && value != null && value != ''
+            ? false
+            : true;
+    }
 
     /**
      * 사칙연산 연산을 구분한다.
      */
-    operatoer = value => {
-        const character = ['+', '-', '÷', '=', 'x'];
-        if (character.includes(value)) {
-            this.model.calcType = value;
-            const firstValue = this.model.firstValue;
-            const secondValue = this.model.secondValue;
+    operatoer = type => {
+        const character = ['+', '-', '÷', 'x', '='];
+
+        if (character.includes(type)) {
+            if (type !== '=') this.model.calcType = type;
+
+            let firstValue = this.model.getFirstValue();
+            let secondValue = this.model.getSecondValue();
             const calcType = this.model.calcType;
 
             switch (calcType) {
                 case '+':
                     // 첫번째getFirstValue 두번째 더한값을 결과 값에 Set.
                     this.model.setResultValue(firstValue + secondValue);
-                    // 결과 값을 첫번째 값에 Set.
+                    // 첫번째 결과 값에 새로운 값을 연산하기 위해 결과 값을 첫번째 값에 Set.
                     this.model.setFirstValue(this.model.getResultValue());
-                    // 두번째 값을 0 으로 Set.
-                    this.model.setSecondValue(0);
-
-                    this.view.displayCalcValue(this.model.getResultValue());
+                    // 새로운 값을 넣기 위해서 두번째 값을 0 으로 Set.
+                    // this.model.setSecondValue(0);
                     break;
-                default:
+                case '-':
+                    this.model.setResultValue(firstValue - secondValue);
+                    this.model.setFirstValue(this.model.getResultValue());
+                    // this.model.setSecondValue(0);
+                    break;
+                case 'x':
+                    this.model.setResultValue(firstValue * secondValue);
+                    if (this.model.getResultValue() > 0)
+                        this.model.setFirstValue(this.model.getResultValue());
+                    // this.model.setSecondValue(0);
                     break;
             }
+            // 새로운 값을 넣기 위해서 두번째 값을 0 으로 Set.
+            this.model.setSecondValue(0);
 
             console.log(
                 `${firstValue} ${calcType} ${secondValue} = ${this.model.getResultValue()}`,
             );
+
+            if (!this.isNull(secondValue)) {
+                this.view.displayCalcValue('');
+                setTimeout(() => {
+                    this.view.displayCalcValue(this.model.getResultValue());
+                }, 100);
+            }
         }
     };
 
@@ -84,12 +110,6 @@ export default class Controller {
         if (value === 'C') this.clearValues();
         this.viewCalcValue(value);
     };
-
-    /**
-     * 값을 입력한다.
-     * @param {string} value
-     */
-    doCalculate = () => {};
 }
 
 // 사칙연산 기본적으로
