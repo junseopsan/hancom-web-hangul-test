@@ -7,7 +7,7 @@ export default class Controller {
     }
 
     /**
-     * 'C' 일때 모든 값을 0 으로 초기화
+     * 'C' 일때 모든 값을 0 으로 초기화.
      * @returns ''
      */
     clearValues = () => {

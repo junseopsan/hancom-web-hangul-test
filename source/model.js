@@ -26,7 +26,7 @@ export default class Model {
     }
 
     /**
-     * 결과 값을 저장한다.
+     * 결과 값을 저장한다..
      * @param {number} value
      */
     setResultValue (value) {

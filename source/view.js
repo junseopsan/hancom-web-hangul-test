@@ -22,7 +22,7 @@ export default class View {
     }
 
     /**
-     * 돔 엘리먼트를 선택한다.
+     * 돔 엘리먼트를 선택한다..
      * @param {element} selector
      * @returns
      */
