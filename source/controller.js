@@ -24,11 +24,9 @@ export default class Controller {
      * @param {string} value
      */
     viewCalcValue = value => {
-        console.log(value);
         if (Number.isInteger(Number(value))) {
             if (!this.model.calcType) {
                 this.model.setFirstValue(Number(this.model.firstValue + value));
-                console.log(this.model.firstValue);
                 this.view.displayCalcValue(this.model.firstValue);
                 return;
             }
@@ -40,17 +38,9 @@ export default class Controller {
                 return;
             }
         }
-        // 찻반쩨 깂 얀신지 두번째
+        // 선택한 값으로 연산자를 실행시킨다.
         this.operatoer(value);
-        // if (!this.isNull(this.model.getSecondValue())) {
-        // }
     };
-
-    isNull (value) {
-        return typeof value != 'undefined' && value != null && value != ''
-            ? false
-            : true;
-    }
 
     /**
      * 사칙연산 연산을 구분한다.
@@ -71,19 +61,38 @@ export default class Controller {
                     this.model.setResultValue(firstValue + secondValue);
                     // 첫번째 결과 값에 새로운 값을 연산하기 위해 결과 값을 첫번째 값에 Set.
                     this.model.setFirstValue(this.model.getResultValue());
-                    // 새로운 값을 넣기 위해서 두번째 값을 0 으로 Set.
-                    // this.model.setSecondValue(0);
                     break;
                 case '-':
                     this.model.setResultValue(firstValue - secondValue);
                     this.model.setFirstValue(this.model.getResultValue());
-                    // this.model.setSecondValue(0);
                     break;
                 case 'x':
                     this.model.setResultValue(firstValue * secondValue);
                     if (this.model.getResultValue() > 0)
                         this.model.setFirstValue(this.model.getResultValue());
-                    // this.model.setSecondValue(0);
+                    break;
+                case '÷':
+                    if (
+                        Number.isInteger(firstValue) &&
+                        Number.isInteger(secondValue)
+                    ) {
+                        // 부동 소수점을 해결하기 위해서 math.js 라이브러리 사용.
+                        const result = math.divide(firstValue, secondValue);
+                        const numberCheckPattern = /[\-0-9\.]+/g;
+
+                        if (numberCheckPattern.test(result)) {
+                            console.log('divide!!');
+                            this.model.setResultValue(result);
+                            if (this.model.getResultValue() > -1) {
+                                this.model.setFirstValue(
+                                    this.model.getResultValue(),
+                                );
+                            }
+                        }
+                        if (result === Infinity) {
+                            this.model.setResultValue('숫자 아님');
+                        }
+                    }
                     break;
             }
             // 새로운 값을 넣기 위해서 두번째 값을 0 으로 Set.
@@ -93,8 +102,10 @@ export default class Controller {
                 `${firstValue} ${calcType} ${secondValue} = ${this.model.getResultValue()}`,
             );
 
-            if (!this.isNull(secondValue)) {
+            // 두번째 값이 존재 할때 결과 값을 보여주도록 한다.
+            if (secondValue != null) {
                 this.view.displayCalcValue('');
+
                 setTimeout(() => {
                     this.view.displayCalcValue(this.model.getResultValue());
                 }, 100);
@@ -111,7 +122,3 @@ export default class Controller {
         this.viewCalcValue(value);
     };
 }
-
-// 사칙연산 기본적으로
-// 부동소수점 : 0.1 / ....
-//

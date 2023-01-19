@@ -1,11 +1,16 @@
 export default class View {
     constructor () {
-        this.app = this.getElement('#grid');
         this.grid = this.getElement('#grid');
         this.result = 0;
     }
 
-    // Create an element with id and an optional CSS class
+    /**
+     * 돔 엘리먼트를 생성한다.
+     * @param {element} tag
+     * @param {string} id
+     * @param {string} className
+     * @returns element
+     */
     createElement (tag, id, className) {
         const element = document.createElement(tag);
         if (id) element.id = id;
@@ -15,7 +20,12 @@ export default class View {
         }
         return element;
     }
-    // Retrieve an element from the DOM
+
+    /**
+     * 돔 엘리먼트를 선택한다.
+     * @param {element} selector
+     * @returns
+     */
     getElement (selector) {
         const element = document.querySelector(selector);
         return element;
@@ -33,22 +43,7 @@ export default class View {
                 element.className,
             );
             createElement.textContent = element.text;
-            this.app.append(createElement);
-        });
-    }
-
-    /**
-     * C 를 눌렀을때 0 으로 초기화 한다.
-     */
-    resetResult () {
-        result.textContent = 0;
-    }
-
-    calculatePlus (handler) {
-        this.grid.addEventListener('click', e => {
-            if (e.target.id !== 'grid' && e.target.innerText === '+') {
-                handler();
-            }
+            this.grid.append(createElement);
         });
     }
 
@@ -64,9 +59,14 @@ export default class View {
 
     /*
      * 선택한 숫자를 계산기에 보여준다.
+     * 12 자리를 넘어갔을때 폰트 사이즈를 조절한다.
      * @param {number} selectNumber
      */
     displayCalcValue (getValue) {
+        if (getValue.toString().length > 12) {
+            const resultBox = this.getElement('#result');
+            resultBox.classList.add('font-180');
+        }
         result.textContent = getValue;
     }
 }

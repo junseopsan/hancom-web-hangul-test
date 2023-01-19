@@ -35,3 +35,6 @@ main {
     height: 60px;
     border: 2px dashed #000;
 } 
+.font-180{
+    font-size: 180%;
+}

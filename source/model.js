@@ -24,36 +24,62 @@ export default class Model {
         this.secondValue = null;
         this.calcType = null;
     }
+
     /**
-     * 입력한 값을 전달한다.
-     * @param {string} value
+     * 결과 값을 저장한다.
+     * @param {number} value
      */
     setResultValue (value) {
         this.resultValue = value;
     }
 
+    /**
+     * 결과 값을 호출한다.
+     * @returns resultValue
+     */
     getResultValue () {
         return this.resultValue;
     }
-
+    /**
+     * 첫번째 값을 저장한다.
+     * @param {number} value
+     */
     setFirstValue (value) {
         this.firstValue = value;
     }
 
+    /**
+     * 첫번째 값을 호출한다.
+     * @returns firstValue
+     */
     getFirstValue () {
         return this.firstValue;
     }
-
+    /**
+     * 두번째 값을 저장한다.
+     * @param {number} value
+     */
     setSecondValue (value) {
         this.secondValue = value;
     }
-
+    /**
+     * 두번째 값을 호출한다.
+     * @returns firstValue
+     */
     getSecondValue () {
         return this.secondValue;
     }
+    /**
+     * 연산 타입 값을 저장한다.
+     * @param {string} value
+     */
     setCalcType (value) {
         this.calcType = value;
     }
+    /**
+     * 연산 타입 값을 호출한다.
+     * @returns calcType
+     */
     getCalcType () {
         return this.calcType;
     }
