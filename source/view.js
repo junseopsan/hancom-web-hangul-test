@@ -1,6 +1,7 @@
 export default class View {
     constructor () {
         this.app = this.getElement('#grid');
+        this.grid = this.getElement('#grid');
         this.result = 0;
     }
 
@@ -21,10 +22,10 @@ export default class View {
     }
 
     /**
-     * 계산기를 보여준다.
+     * 계산기 외형 및 키패드를 셋팅.
      * @param {model} hancomData
      */
-    displayHancomCalculate (hancomData) {
+    makeHancomCalculate (hancomData) {
         hancomData.forEach(element => {
             const createElement = this.createElement(
                 'button',
@@ -43,29 +44,29 @@ export default class View {
         result.textContent = 0;
     }
 
-    setFirstInputNumber (handler) {
-        const grid = this.getElement('#grid');
-        grid.addEventListener('click', e => {
-            if (e.target.id !== 'grid') handler(e.target.innerText);
+    calculatePlus (handler) {
+        this.grid.addEventListener('click', e => {
+            if (e.target.id !== 'grid' && e.target.innerText === '+') {
+                handler();
+            }
         });
     }
 
     /**
-     * 선택한 숫자를 입력한다.
+     * 푸쉬된 숫자에 클릭 이벤트를 할당하여 값을 콜백시킨다.
+     * @param {string} handler
+     */
+    setInputNumber (handler) {
+        this.grid.addEventListener('click', e => {
+            if (e.target.id !== 'grid') handler(e.target.innerText);
+        });
+    }
+
+    /*
+     * 선택한 숫자를 계산기에 보여준다.
      * @param {number} selectNumber
      */
-    displayResult (getValue) {
-        if (getValue == 'c') {
-            this.resetResult();
-        } else {
-            if (result.textContent !== '0') {
-                result.textContent += Number(getValue);
-            } else {
-                result.textContent = Number(getValue);
-            }
-        }
-        this.result = result.textContent;
-
-        return result.textContent;
+    displayCalcValue (getValue) {
+        result.textContent = getValue;
     }
 }

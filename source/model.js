@@ -15,49 +15,40 @@ export default class Model {
             { id: 'three', text: '3', className: 'box' },
             { id: 'minus', text: '-', className: 'box grayBox' },
             { id: 'zero', text: '0', className: 'box' },
-            { id: 'c', text: 'c', className: 'box orangeBox' },
+            { id: 'c', text: 'C', className: 'box orangeBox' },
             { id: 'equal', text: '=', className: 'box grayBox' },
             { id: 'plus', text: '+', className: 'box grayBox' },
         ];
-        this.result = 0;
+        this.resultValue = 0;
         this.firstValue = 0;
         this.secondValue = 0;
-        this.secondValue = 0;
-        this.calculateType = null;
+        this.calcType = null;
     }
     /**
      * 입력한 값을 전달한다.
      * @param {string} value
      */
-    setResult (callback) {
-        this.handleInputNumber = callback;
-        this.firstValue = callback;
-    }
-    /**
-     * 나눗셈 연산을 실행한다.
-     */
-    calculateDivision () {
-        this.result = this.firstValue / this.secondValue;
+    setResultValue (value) {
+        this.resultValue = value;
     }
 
-    /**
-     * 곱하기 연산을 실행한다.
-     */
-    calculateMultiply () {
-        this.result = this.firstValue * this.secondValue;
+    getResultValue () {
+        return this.resultValue;
     }
 
-    /**
-     * 뺼셈 연산을 실행한다.
-     */
-    calculateMinus () {
-        this.result = this.firstValue - this.secondValue;
+    setFirstValue (value) {
+        this.firstValue = value;
     }
 
-    /**
-     * 덧셈 연산을 실행한다.
-     */
-    calculatePlus () {
-        this.result = this.firstValue + this.secondValue;
+    getFirstValue () {
+        return this.firstValue;
+    }
+
+    setSecondValue (value) {
+        this.secondValue = value;
+    }
+
+    getSecondValue () {
+        return this.secondValue;
     }
 }
