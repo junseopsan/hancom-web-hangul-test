@@ -216,7 +216,7 @@ class Controller {
                 return;
             }
         }
-        // 선택한 값으로 연산자를 실행시킨다.
+        // 선택한 값으로 연산자를 실행시킨다..
         this.operatoer(value);
     };
 
