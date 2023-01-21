@@ -75,17 +75,13 @@ class Model {
  */
 class View {
     constructor () {
-        this.grid = null;
         this.result = 0;
-
-        this.grid = this.#getElement('#grid');
     }
 
     /**
      * 돔 엘리먼트를 생성한다.
-     * @param {element} tag
-     * @param {string} id
-     * @param {string} className
+     * @param {element} tagName
+     * @param {attrs} attrs
      * @returns element
      */
     #makeElement = (tagName, attrs) => {
@@ -118,7 +114,7 @@ class View {
                 className: item.className,
                 text: item.text,
             });
-            this.grid.append(createElement);
+            this.#getElement('#grid').append(createElement);
         });
     }
 
@@ -127,7 +123,7 @@ class View {
      * @param {string} handler
      */
     setInputNumber (handler) {
-        this.grid.addEventListener('click', e => {
+        this.#getElement('#grid').addEventListener('click', e => {
             if (e.target.id !== 'grid') handler(e.target.innerText);
         });
     }
@@ -189,7 +185,7 @@ class Controller {
     #clearValues = () => {
         this.model.setFirstValue(0);
         this.model.setSecondValue(null);
-        this.view.displayCalcValue(0);
+        this.model.setResultValue(0);
         this.model.setCalcType(null);
         return '';
     };
@@ -200,6 +196,8 @@ class Controller {
      * @param {string} value
      */
     #checkValues (value) {
+        if (this.model.getResultValue() === '숫자 아님') this.#clearValues();
+
         const calcType = this.model.calcType;
         !calcType
             ? this.model.setFirstValue(Number(this.model.firstValue + value))
@@ -208,28 +206,38 @@ class Controller {
         const displayValue = calcType
             ? this.model.secondValue
             : this.model.firstValue;
+
         this.view.displayCalcValue(displayValue);
     }
 
     /**
-     * 키패드에 입력된 값을 계산하여 보여준다.
+     * 키패드에 입력된 값으로 계산을 한다.
      * @param {string} value
      */
-    #viewCalcValue = value => {
+    #doCalculrate = value => {
         if (Number.isInteger(Number(value))) {
             this.#checkValues(value);
             return;
         }
         // 선택한 값으로 연산자를 실행시킨다.
         if (value !== '=') this.model.setCalcType(value);
-        this.operator(value);
+        this.executeOperator(value);
     };
 
+    /**
+     * 최종 계산 된 값을 시각적인 깜빡임 효과와 함께 보여준다.
+     */
+    #displayResultValue () {
+        this.view.displayCalcValue('');
+        setTimeout(() => {
+            this.view.displayCalcValue(this.model.getResultValue());
+        }, 100);
+    }
     /**
      * 사칙연산을 구분하고 계산된 값을 출력한다.
      * @param {string} type
      */
-    operator = type => {
+    executeOperator = type => {
         const calcType = this.model.getCalcType();
         const firstValue = this.model.getFirstValue();
         const secondValue = this.model.getSecondValue();
@@ -243,6 +251,9 @@ class Controller {
                     this.model.setResultValue(firstValue - secondValue);
                 },
                 ['x']: () => {
+                    if (type === '=' && this.model.getResultValue() === 0)
+                        this.model.setFirstValue(0);
+
                     this.model.setResultValue(firstValue * secondValue);
                 },
                 ['÷']: () => {
@@ -250,19 +261,19 @@ class Controller {
                         // 부동 소수점을 해결하기 위해서 math.js 라이브러리 사용.
                         const result = math.divide(firstValue, secondValue);
                         this.model.setResultValue(result);
-                        if (result === Infinity)
+                        if (result === Infinity) {
                             this.model.setResultValue('숫자 아님');
+                            this.#displayResultValue();
+                        }
                     }
                 },
                 ['=']: () => {},
             };
             doCalc[type]() || doCalc[calcType]();
-
             // 첫번째 결과 값에 새로운 값을 연산하기 위해 결과 값을 첫번째 값에 Set.
             if (this.model.getResultValue() !== 0)
                 this.model.setFirstValue(this.model.getResultValue());
 
-            // 새로운 값을 넣기 위해서 두번째 값을 0 으로 Set.
             this.model.setSecondValue(0);
 
             console.log(
@@ -271,12 +282,8 @@ class Controller {
         }
 
         // 두번째 값이 존재 할때 결과 값을 보여주도록 한다.
-        if (secondValue != null) {
-            // 계산되었을때 시각적인 깜빡임 효과를 준다.
-            this.view.displayCalcValue('');
-            setTimeout(() => {
-                this.view.displayCalcValue(this.model.getResultValue());
-            }, 100);
+        if (secondValue !== 0 && secondValue != null) {
+            this.#displayResultValue();
         }
     };
 
@@ -289,7 +296,7 @@ class Controller {
             this.#clearValues();
             return;
         }
-        this.#viewCalcValue(value);
+        this.#doCalculrate(value);
     };
 }
 
