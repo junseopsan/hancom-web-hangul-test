@@ -214,7 +214,7 @@ class Controller {
      * 키패드에 입력된 값으로 계산을 한다.
      * @param {string} value
      */
-    #doCalculrate = value => {
+    #doCalculate = value => {
         if (Number.isInteger(Number(value))) {
             this.#checkValues(value);
             return;
@@ -296,7 +296,7 @@ class Controller {
             this.#clearValues();
             return;
         }
-        this.#doCalculrate(value);
+        this.#doCalculate(value);
     };
 }
 
