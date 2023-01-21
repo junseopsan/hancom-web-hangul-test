@@ -1,29 +1,9 @@
 /**
  * @class Model
  *
- * Manages the data of the application.
  */
 class Model {
     constructor () {
-        this.hancomData = [
-            { id: 'result', text: '0', className: 'viewBox grayBox' },
-            { id: 'seven', text: '7', className: 'box' },
-            { id: 'eight', text: '8', className: 'box' },
-            { id: 'nine', text: '9', className: 'box' },
-            { id: 'division', text: '÷', className: 'box grayBox' },
-            { id: 'four', text: '4', className: 'box' },
-            { id: 'five', text: '5', className: 'box' },
-            { id: 'six', text: '6', className: 'box' },
-            { id: 'multiply', text: 'x', className: 'box grayBox' },
-            { id: 'one', text: '1', className: 'box' },
-            { id: 'two', text: '2', className: 'box' },
-            { id: 'three', text: '3', className: 'box' },
-            { id: 'minus', text: '-', className: 'box grayBox' },
-            { id: 'zero', text: '0', className: 'box' },
-            { id: 'c', text: 'C', className: 'box orangeBox' },
-            { id: 'equal', text: '=', className: 'box grayBox' },
-            { id: 'plus', text: '+', className: 'box grayBox' },
-        ];
         this.resultValue = 0;
         this.firstValue = 0;
         this.secondValue = null;
@@ -37,7 +17,6 @@ class Model {
     setResultValue (value) {
         this.resultValue = value;
     }
-
     /**
      * 결과 값을 호출한다.
      * @returns resultValue
@@ -52,7 +31,6 @@ class Model {
     setFirstValue (value) {
         this.firstValue = value;
     }
-
     /**
      * 첫번째 값을 호출한다.
      * @returns firstValue
@@ -97,8 +75,10 @@ class Model {
  */
 class View {
     constructor () {
-        this.grid = this.getElement('#grid');
+        this.grid = null;
         this.result = 0;
+
+        this.grid = this.#getElement('#grid');
     }
 
     /**
@@ -108,38 +88,36 @@ class View {
      * @param {string} className
      * @returns element
      */
-    createElement (tag, id, className) {
-        const element = document.createElement(tag);
-        if (id) element.id = id;
-        if (className) {
-            const classList = className.split(' ');
-            element.classList.add(...classList);
+    #makeElement = (tagName, attrs) => {
+        const $dom = document.createElement(tagName);
+        for (const [key, value] of Object.entries(attrs)) {
+            $dom[key] = value;
         }
-        return element;
-    }
+        $dom.textContent = attrs.text;
+        return $dom;
+    };
 
     /**
      * 돔 엘리먼트를 선택한다.
      * @param {element} selector
      * @returns
      */
-    getElement (selector) {
+    #getElement (selector) {
         const element = document.querySelector(selector);
         return element;
     }
 
     /**
      * 계산기 외형 및 키패드를 셋팅.
-     * @param {model} hancomData
+     * @param {model} calulateData
      */
-    makeHancomCalculate (hancomData) {
-        hancomData.forEach(element => {
-            const createElement = this.createElement(
-                'button',
-                element.id,
-                element.className,
-            );
-            createElement.textContent = element.text;
+    makeCalculator (calulateData) {
+        calulateData.forEach(item => {
+            const createElement = this.#makeElement('button', {
+                id: item.id,
+                className: item.className,
+                text: item.text,
+            });
             this.grid.append(createElement);
         });
     }
@@ -157,13 +135,15 @@ class View {
     /*
      * 선택한 숫자를 계산기에 보여준다.
      * 12 자리를 넘어갔을때 폰트 사이즈를 조절한다.
-     * @param {number} selectNumber
+     * @param {number} getValue
      */
     displayCalcValue (getValue) {
-        if (getValue.toString().length > 12) {
-            const resultBox = this.getElement('#result');
+        const resultBox = this.#getElement('#result');
+
+        resultBox.classList.remove('font-180');
+        if (getValue.toString().length > 12)
             resultBox.classList.add('font-180');
-        }
+
         result.textContent = getValue;
     }
 }
@@ -171,16 +151,34 @@ class View {
 /**
  * @class Controller
  *
- * Links the user input and the view output.
- *
  * @param model
  * @param view
  */
 class Controller {
     constructor (model, view) {
+        // 구조상 Model 에는 스키마만 존재하는 게 맞다고 생각하여 계산기에 대한 데이터는 컨트롤러에 존재함.
+        const calculatorData = [
+            { id: 'result', text: '0', className: 'viewBox grayBox' },
+            { id: 'seven', text: '7', className: 'box' },
+            { id: 'eight', text: '8', className: 'box' },
+            { id: 'nine', text: '9', className: 'box' },
+            { id: 'division', text: '÷', className: 'box grayBox' },
+            { id: 'four', text: '4', className: 'box' },
+            { id: 'five', text: '5', className: 'box' },
+            { id: 'six', text: '6', className: 'box' },
+            { id: 'multiply', text: 'x', className: 'box grayBox' },
+            { id: 'one', text: '1', className: 'box' },
+            { id: 'two', text: '2', className: 'box' },
+            { id: 'three', text: '3', className: 'box' },
+            { id: 'minus', text: '-', className: 'box grayBox' },
+            { id: 'zero', text: '0', className: 'box' },
+            { id: 'c', text: 'C', className: 'box orangeBox' },
+            { id: 'equal', text: '=', className: 'box grayBox' },
+            { id: 'plus', text: '+', className: 'box grayBox' },
+        ];
         this.model = model;
         this.view = view;
-        this.view.makeHancomCalculate(this.model.hancomData);
+        this.view.makeCalculator(calculatorData);
         this.view.setInputNumber(this.setCalcKeypad);
     }
 
@@ -188,7 +186,7 @@ class Controller {
      * 'C' 일때 모든 값을 0 으로 초기화
      * @returns ''
      */
-    clearValues = () => {
+    #clearValues = () => {
         this.model.setFirstValue(0);
         this.model.setSecondValue(null);
         this.view.displayCalcValue(0);
@@ -197,96 +195,88 @@ class Controller {
     };
 
     /**
+     * 입력 된 값이 첫번째값 입력 또는 두번째 값인지 체크한다.
      * 키패드로 전달된 값을 연산자 여부에 따라서 첫번째, 두번째 값으로 셋팅한다.
-     *
      * @param {string} value
      */
-    viewCalcValue = value => {
+    #checkValues (value) {
+        const calcType = this.model.calcType;
+        !calcType
+            ? this.model.setFirstValue(Number(this.model.firstValue + value))
+            : this.model.setSecondValue(Number(this.model.secondValue + value));
+
+        const displayValue = calcType
+            ? this.model.secondValue
+            : this.model.firstValue;
+        this.view.displayCalcValue(displayValue);
+    }
+
+    /**
+     * 키패드에 입력된 값을 계산하여 보여준다.
+     * @param {string} value
+     */
+    #viewCalcValue = value => {
         if (Number.isInteger(Number(value))) {
-            if (!this.model.calcType) {
-                this.model.setFirstValue(Number(this.model.firstValue + value));
-                this.view.displayCalcValue(this.model.firstValue);
-                return;
-            }
-            if (this.model.calcType) {
-                this.model.setSecondValue(
-                    Number(this.model.secondValue + value),
-                );
-                this.view.displayCalcValue(this.model.secondValue);
-                return;
-            }
+            this.#checkValues(value);
+            return;
         }
-        // 선택한 값으로 연산자를 실행시킨다..
-        this.operatoer(value);
+        // 선택한 값으로 연산자를 실행시킨다.
+        if (value !== '=') this.model.setCalcType(value);
+        this.operator(value);
     };
 
     /**
-     * 사칙연산 연산을 구분한다.
+     * 사칙연산을 구분하고 계산된 값을 출력한다.
+     * @param {string} type
      */
-    operatoer = type => {
-        const character = ['+', '-', '÷', 'x', '='];
+    operator = type => {
+        const calcType = this.model.getCalcType();
+        const firstValue = this.model.getFirstValue();
+        const secondValue = this.model.getSecondValue();
 
-        if (character.includes(type)) {
-            if (type !== '=') this.model.calcType = type;
-
-            let firstValue = this.model.getFirstValue();
-            let secondValue = this.model.getSecondValue();
-            const calcType = this.model.calcType;
-
-            switch (calcType) {
-                case '+':
-                    // 첫번째getFirstValue 두번째 더한값을 결과 값에 Set.
+        if (['+', '-', '÷', 'x', '='].includes(type)) {
+            const doCalc = {
+                ['+']: () => {
                     this.model.setResultValue(firstValue + secondValue);
-                    // 첫번째 결과 값에 새로운 값을 연산하기 위해 결과 값을 첫번째 값에 Set.
-                    this.model.setFirstValue(this.model.getResultValue());
-                    break;
-                case '-':
+                },
+                ['-']: () => {
                     this.model.setResultValue(firstValue - secondValue);
-                    this.model.setFirstValue(this.model.getResultValue());
-                    break;
-                case 'x':
+                },
+                ['x']: () => {
                     this.model.setResultValue(firstValue * secondValue);
-                    if (this.model.getResultValue() > 0)
-                        this.model.setFirstValue(this.model.getResultValue());
-                    break;
-                case '÷':
-                    if (
-                        Number.isInteger(firstValue) &&
-                        Number.isInteger(secondValue)
-                    ) {
+                },
+                ['÷']: () => {
+                    if (type !== '÷') {
                         // 부동 소수점을 해결하기 위해서 math.js 라이브러리 사용.
                         const result = math.divide(firstValue, secondValue);
-                        const numberCheckPattern = /[\-0-9\.]+/g;
-
-                        if (numberCheckPattern.test(result)) {
-                            this.model.setResultValue(result);
-                            if (this.model.getResultValue() > -1) {
-                                this.model.setFirstValue(
-                                    this.model.getResultValue(),
-                                );
-                            }
-                        }
-                        if (result === Infinity) {
+                        this.model.setResultValue(result);
+                        if (result === Infinity)
                             this.model.setResultValue('숫자 아님');
-                        }
                     }
-                    break;
-            }
+                },
+                ['=']: () => {},
+            };
+            doCalc[type]() || doCalc[calcType]();
+
+            // 첫번째 결과 값에 새로운 값을 연산하기 위해 결과 값을 첫번째 값에 Set.
+            if (this.model.getResultValue() !== 0)
+                this.model.setFirstValue(this.model.getResultValue());
+
             // 새로운 값을 넣기 위해서 두번째 값을 0 으로 Set.
             this.model.setSecondValue(0);
 
             console.log(
                 `${firstValue} ${calcType} ${secondValue} = ${this.model.getResultValue()}`,
             );
+        }
 
-            // 두번째 값이 존재 할때 결과 값을 보여주도록 한다.
-            if (secondValue != null) {
-                this.view.displayCalcValue('');
-
-                setTimeout(() => {
-                    this.view.displayCalcValue(this.model.getResultValue());
-                }, 100);
-            }
+        // 두번째 값이 존재 할때 결과 값을 보여주도록 한다.
+        if (secondValue != null) {
+            // 계산되었을때 시각적인 깜빡임 효과를 준다.
+            this.view.displayCalcValue('');
+            setTimeout(() => {
+                this.view.displayCalcValue(this.model.getResultValue());
+            }, 100);
         }
     };
 
@@ -295,8 +285,11 @@ class Controller {
      * @param {string} value
      */
     setCalcKeypad = value => {
-        if (value === 'C') this.clearValues();
-        this.viewCalcValue(value);
+        if (value === 'C') {
+            this.#clearValues();
+            return;
+        }
+        this.#viewCalcValue(value);
     };
 }
 
