@@ -270,10 +270,12 @@ class Controller {
                 ['=']: () => {},
             };
             doCalc[type]() || doCalc[calcType]();
+
             // 첫번째 결과 값에 새로운 값을 연산하기 위해 결과 값을 첫번째 값에 Set.
             if (this.model.getResultValue() !== 0)
                 this.model.setFirstValue(this.model.getResultValue());
 
+            // 두번째 값을 입력하기 위해 0 으로 set.
             this.model.setSecondValue(0);
 
             console.log(
@@ -281,7 +283,7 @@ class Controller {
             );
         }
 
-        // 두번째 값이 존재 할때 결과 값을 보여주도록 한다.
+        // 두번째 값이 0이거나 존재 할때 결과 값을 보여주도록 한다.
         if (secondValue !== 0 && secondValue != null) {
             this.#displayResultValue();
         }
