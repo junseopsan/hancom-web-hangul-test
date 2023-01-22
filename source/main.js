@@ -199,7 +199,7 @@ class Controller {
     #checkValues (value) {
         if (this.model.getResultValue() === '숫자 아님') this.#clearValues();
 
-        const calcType = this.model.calcType;
+        const calcType = this.model.getCalcType();
         !calcType
             ? this.model.setFirstValue(Number(this.model.firstValue + value))
             : this.model.setSecondValue(Number(this.model.secondValue + value));
@@ -220,9 +220,12 @@ class Controller {
             this.#checkValues(value);
             return;
         }
+
         // 선택한 값으로 연산자를 실행시킨다.
-        if (value !== '=') this.model.setCalcType(value);
         this.executeOperator(value);
+
+        // + - x ÷ setting.
+        if (value !== '=') this.model.setCalcType(value);
     };
 
     /**
@@ -236,14 +239,14 @@ class Controller {
     }
     /**
      * 사칙연산을 구분하고 계산된 값을 출력한다.
-     * @param {string} type
+     * @param {string} value
      */
-    executeOperator = type => {
+    executeOperator = value => {
         const calcType = this.model.getCalcType();
         const firstValue = this.model.getFirstValue();
         const secondValue = this.model.getSecondValue();
 
-        if (['+', '-', '÷', 'x', '='].includes(type)) {
+        if (['+', '-', '÷', 'x', '='].includes(value)) {
             const doCalc = {
                 ['+']: () => {
                     this.model.setResultValue(firstValue + secondValue);
@@ -252,13 +255,13 @@ class Controller {
                     this.model.setResultValue(firstValue - secondValue);
                 },
                 ['x']: () => {
-                    if (type === '=' && this.model.getResultValue() === 0)
+                    if (value === '=' && this.model.getResultValue() === 0)
                         this.model.setFirstValue(0);
 
                     this.model.setResultValue(firstValue * secondValue);
                 },
                 ['÷']: () => {
-                    if (type !== '÷') {
+                    if (value !== '÷') {
                         // 부동 소수점을 해결하기 위해서 math.js 라이브러리 사용.
                         const result = math.divide(firstValue, secondValue);
                         this.model.setResultValue(result);
@@ -270,7 +273,7 @@ class Controller {
                 },
                 ['=']: () => {},
             };
-            doCalc[type]() || doCalc[calcType]();
+            if (calcType) doCalc[calcType]();
 
             // 첫번째 결과 값에 새로운 값을 연산하기 위해 결과 값을 첫번째 값에 Set.
             if (this.model.getResultValue() !== 0)
@@ -283,7 +286,6 @@ class Controller {
                 `${firstValue} ${calcType} ${secondValue} = ${this.model.getResultValue()}`,
             );
         }
-
         // 두번째 값이 0이거나 존재 할때 결과 값을 보여주도록 한다.
         if (secondValue !== 0 && secondValue !== null) {
             this.#displayResultValue();
