@@ -187,6 +187,7 @@ class Controller {
         this.model.setSecondValue(null);
         this.model.setResultValue(0);
         this.model.setCalcType(null);
+        this.view.displayCalcValue(0);
         return '';
     };
 
@@ -284,7 +285,7 @@ class Controller {
         }
 
         // 두번째 값이 0이거나 존재 할때 결과 값을 보여주도록 한다.
-        if (secondValue !== 0 && secondValue != null) {
+        if (secondValue !== 0 && secondValue !== null) {
             this.#displayResultValue();
         }
     };
